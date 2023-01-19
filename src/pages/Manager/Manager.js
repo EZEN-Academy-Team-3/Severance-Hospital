@@ -13,7 +13,12 @@ import styled from "styled-components";
 // 서브 라우팅
 import CustomerBoard from "./CustomerBoard/CustomerBoard";
 import News from "./News/News";
+
 import Notice from "./Notice/Notice";
+import NoticeAdd from "./Notice/NoticeAdd";
+import NoticeEdit from "./Notice/NoticeEdit";
+import NoticeView from "./Notice/NoticeView";
+
 import Appointment from "./Appointment/Appointment";
 import UserInfo from "./UserInfo/UserInfo";
 import UserResult from "./UserResult/UserResult";
@@ -35,7 +40,6 @@ const MenuContainer = styled.div`
   flex-wrap: wrap;
 
   padding: 50px 10% 20px;
-  border-bottom: 1px solid #eee;
 `;
 // 각 메뉴 스타일
 const MenuLinkContainer = styled(NavLink)`
@@ -80,7 +84,12 @@ const Manager = memo(() => {
         <Route path="/" element={<CustomerBoard />} />
         <Route path="/customer_board" element={<CustomerBoard />} />
         <Route path="/news" element={<News />} />
+
         <Route path="/notice" element={<Notice />} />
+        <Route path="/notice/add" element={<NoticeAdd />} />
+        <Route path="/notice/edit/:id" element={<NoticeEdit />} />
+        <Route path="/notice/view/:id" element={<NoticeView />} />
+
         <Route path="/appointment" element={<Appointment />} />
         <Route path="/user_info" element={<UserInfo />} />
         <Route path="/user_result" element={<UserResult />} />
