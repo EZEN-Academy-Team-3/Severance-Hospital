@@ -1,7 +1,7 @@
 /**
  * @ File Name: drugController.js
  * @ Author: 주혜지 (rosyjoo1999@gmail.com)
- * @ Last Update: 2023-01-12 17:21
+ * @ Last Update: 2023-01-12 16:06
  * @ Description: 의약품 백엔드 Controller
  */
 
@@ -71,6 +71,8 @@ module.exports = (() => {
     // 파라미터 받기
     const { id } = req.params;
 
+    console.log(`id=${id}`);
+
     // 파라미터 유효성검사
     try {
       regexHelper.value(id, '품목일련번호가 없습니다.');
@@ -84,7 +86,7 @@ module.exports = (() => {
 
     try {
       json = await drugService.getItem({
-        ITEM_SEQ: id,
+        id: id,
       });
     } catch (err) {
       return next(err);

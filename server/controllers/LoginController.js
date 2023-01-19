@@ -1,7 +1,7 @@
 /*
  * @ File name: LoginController.js
  * @ Author: 김다보미(cdabomi60@gmail.com)
- * @ Last Update: 2023-01-13 15:40
+ * @ Last Update: 2023-01-18 15:40
  * @ Description: 로그인 컨트롤러
  */
 
@@ -34,7 +34,8 @@ module.exports = (() => {
 
     console.log(req.session.userInfo);
 
-    if (req.session.userInfo !== undefined) {
+    if (req.session.userInfo) {
+      console.log(req.session.userInfo);
       return next(new ForbiddenException('이미 로그인 중입니다.'));
     }
 
@@ -58,14 +59,12 @@ module.exports = (() => {
   
     try {
       // 3) SQL 실행하기
-      const sql = "SELECT userId,userPassword FROM userInfo WHERE userId=? AND userPassword=?";
+      const sql = "SELECT userId,userName,userSex,userTel,userPreTel,userEmail,prtctorName,prtctorSex,prtctorBirth,regDate,userCategory,withdrawalStatus,withdrawalDate,withdrawalReason,editDate,pwEditDate,authCode,termsAgree,privateAgree,marketingAgree FROM userInfo WHERE userId=? AND userPassword=?";
       const [result1] = await dbcon.query(sql, [id, pw]);
       userInfo = result1[0];
       if (result1.length < 1) {
         throw new ForbiddenException('아이디나 비밀번호를 확인하세요');
       }
-  
-      // 실제 restful api를 구현할 경우에는 json을 응답결과로 전달하면되므로 sql 조회 결과에 대해서 별도의 반복문을 처리하지는 않고 리턴 받은 result1을 통째로 응답결과로 사용하면 된다.
     } catch (err) {
       console.error(err);
       return next(err);
@@ -77,7 +76,7 @@ module.exports = (() => {
     }
 
     req.session.userInfo = userInfo;
-    res.sendResult();
+    res.sendResult({userInfo: userInfo});
   });
 
   return router;

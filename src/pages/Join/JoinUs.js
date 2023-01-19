@@ -1,14 +1,16 @@
 /**
  * @ File Name: JoinUs.js
  * @ Author: 김다보미 (cdabomi@nate.com)
- * @ Last Update: 2022-12-30 15:35
+ * @ Last Update: 2023-01-18 16:00
  * @ Description: 회원가입 정보 입력 페이지
  */
 
-import React, { memo } from "react";
+import React, { memo,useDispatch } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import dayjs from "dayjs";
 import styled from "styled-components";
+import axios from "axios";
 import LoginHeader from "../../components/LoginHeader";
 import LoginFooter from "../../components/LoginFooter";
 
@@ -148,6 +150,7 @@ const Container = styled.div`
   .id_input,
   .password_input,
   .repassword_input,
+  .username_input,
   .name_input {
     width: 355px;
     max-width: 100%;
@@ -341,15 +344,67 @@ const JoinUs = memo(() => {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm({
-    mode: "onChange"
+    mode: "onChange",
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    navigate("/join_complete");
-  };
+  const onSubmit = (async (e) => {
+    const userId = e.userid;
+    const userPassword = e.password;
+    const userName = e.name;
+    const userSex = (e.userSex==='남') ? 'M' : 'F';
+    const userTel = e.telno1 + e.tel2 + e.tel3;
+    const userPreTel = e.pretelno1 + e.pretelno2 + e.pretelno3;
+    const userEmail = e.emailId + "@" + e.emailDomainInput;
+    const prtctorName = e.prtctorNm;
+    const prtctorSex = e.prtctorSexdstnCode;
+    const prtctorBirth = e.year_input + e.month_input + e.date_input;
+    const regDate = dayjs(new Date()).format('YYYY-MM-DD hh:mm:ss');
+    const userCategory = "N";
+    const withdrawalStatus = "N";
+    // const withdrawalDate = "";
+    // const withdrawalReason = "";
+    // const editDate = "";
+    // const pwEditDate = "";
+    // const authCode = "";
+    const termsAgree = "Y";
+    const privateAgree = "Y";
+    const marketingAgree = "Y";
+
+    try {
+      // Ajax 요청 보내기 -> 백엔드가 전달한 결과값이 response.data에 저장된다.
+      const response = await axios.post("/userinfo", {
+        userId: userId,
+        userPassword: userPassword,
+        userName: userName,
+        userSex: userSex,
+        userTel: userTel,
+        userPreTel: userPreTel,
+        userEmail: userEmail,
+        prtctorName: prtctorName,
+        prtctorSex: prtctorSex,
+        prtctorBirth: prtctorBirth,
+        regDate: regDate,
+        userCategory: userCategory,
+        withdrawalStatus: withdrawalStatus,
+        termsAgree: termsAgree,
+        privateAgree: privateAgree,
+        marketingAgree: marketingAgree,
+      });
+      console.log(response.data);
+      navigate("/join_complete");
+    } catch (error) {
+      if (error.response?.data?.rtmsg) {
+        alert(error.response?.data?.rtmsg);
+      } else {
+        const errorMsg = '[' + error.response.status + '] ' + error.response.statusText;
+        console.error(errorMsg);
+        alert("회원가입에 실패했습니다. 입력정보를 확인하세요.");
+      }
+    }
+  });
+
   const onError = (error) => {
     console.log(error);
   };
@@ -396,7 +451,12 @@ const JoinUs = memo(() => {
             </li>
           </ol>
         </div>
-        <form className="default_info" onSubmit={handleSubmit(onSubmit, onError)} id="default_info">
+        <form
+          className="default_info"
+          onSubmit={handleSubmit(onSubmit, onError)}
+          id="default_info"
+          method="post"
+        >
           <h4>
             기본정보입력
             <span className="sub_text">
@@ -414,29 +474,33 @@ const JoinUs = memo(() => {
                   <div>
                     <input
                       type="text"
-                      name="mberId"
-                      id="mberId"
+                      name="userid"
+                      id="userid"
                       className="id_input"
                       {...register("userid", {
                         required: "아이디를 입력해주세요.",
                         minLength: {
                           value: 6,
-                          message: "아이디는 6자 이상 20자 이내로 입력해주세요."
+                          message:
+                            "아이디는 6자 이상 20자 이내로 입력해주세요.",
                         },
                         maxLength: {
                           value: 20,
-                          message: "아이디는 6자 이상 20자 이내로 입력해주세요."
+                          message:
+                            "아이디는 6자 이상 20자 이내로 입력해주세요.",
                         },
                         pattern: {
                           value: /^[a-zA-Z0-9]*$/,
-                          message: "한글/특수문자는 입력이 불가능합니다."
-                        }
+                          message: "한글/특수문자는 입력이 불가능합니다.",
+                        },
                       })}
                     />
-                    <button type="button" className="dub_btn" 
-                    // {...register("dubBtn", {
-                    //   required: "아이디 중복확인을 해주세요."
-                    // })}
+                    <button
+                      type="button"
+                      className="dub_btn"
+                      // {...register("dubBtn", {
+                      //   required: "아이디 중복확인을 해주세요."
+                      // })}
                     >
                       중복확인
                     </button>
@@ -478,16 +542,17 @@ const JoinUs = memo(() => {
                         required: "비밀번호를 입력해주세요.",
                         minLength: {
                           value: 8,
-                          message: "비밀번호 규격에 맞춰 입력해주세요."
+                          message: "비밀번호 규격에 맞춰 입력해주세요.",
                         },
                         maxLength: {
                           value: 20,
-                          message: "비밀번호 규격에 맞춰 입력해주세요."
+                          message: "비밀번호 규격에 맞춰 입력해주세요.",
                         },
                         pattern: {
-                          value: /(?=.*\d{1,20})(?=.*[~`!@#$%\^&*()-+=]{1,20})(?=.*[a-zA-Z]{2,20}).{8,20}$/,
-                          message: "비밀번호 규격에 맞춰 입력해주세요."
-                        }
+                          value:
+                            /(?=.*\d{1,20})(?=.*[~`!@#$%\^&*()-+=]{1,20})(?=.*[a-zA-Z]{2,20}).{8,20}$/,
+                          message: "비밀번호 규격에 맞춰 입력해주세요.",
+                        },
                       })}
                     />
                   </div>
@@ -495,7 +560,10 @@ const JoinUs = memo(() => {
                     <li>※ 8자 이상 ~ 20자 이내로 설정해주세요.</li>
                     <li>※ 영문, 숫자, 특수문자를 모두 포함해주세요.</li>
                     <li>※ 비밀번호 예시: password121!</li>
-                    <li>※ 문자열이 3자리 이상 연속되거나 동일하지 않게 해주세요. (ex. 111, 123, 321, aaa, abc 등)</li>
+                    <li>
+                      ※ 문자열이 3자리 이상 연속되거나 동일하지 않게 해주세요.
+                      (ex. 111, 123, 321, aaa, abc 등)
+                    </li>
                   </ul>
                   {errors.password ? (
                     <p className="warn">
@@ -532,7 +600,7 @@ const JoinUs = memo(() => {
                           if (watch("password") !== val) {
                             return "비밀번호가 일치하지 않습니다.";
                           }
-                        }
+                        },
                       })}
                     />
                     {errors.repassword ? (
@@ -554,7 +622,10 @@ const JoinUs = memo(() => {
                           비밀번호를 입력해주세요.
                         </p>
                       )
-                    ) : passwordValue === repasswordValue && repasswordValue && !errors.password && !errors.repassword ? (
+                    ) : passwordValue === repasswordValue &&
+                      repasswordValue &&
+                      !errors.password &&
+                      !errors.repassword ? (
                       <p className="check">
                         <img src={check} alt="check" />
                         비밀번호가 일치합니다.
@@ -585,12 +656,12 @@ const JoinUs = memo(() => {
                   <div>
                     <input
                       type="text"
-                      autoComplete="new-password"
-                      name="password"
-                      id="password"
-                      className="password_input"
+                      autoComplete="username"
+                      name="name"
+                      id="username"
+                      className="username_input"
                       {...register("name", {
-                        required: "성명을 입력해주세요."
+                        required: "성명을 입력해주세요.",
                       })}
                     />
                   </div>
@@ -605,19 +676,23 @@ const JoinUs = memo(() => {
 
               {/* 성별 */}
               <tr>
-                <th><span className="require">*</span>성별</th>
+                <th>
+                  <span className="require">*</span>성별
+                </th>
                 <td>
                   <span className="radioList">
-                    <input
-                      type="radio"
-                      id="male"
-                      value="M"
-                      name="prtctorSexdstnCode"
-                    />
+                    <input type="radio" id="male" value="M" name="userSex" />
                     <label htmlFor="male">남</label>
                   </span>
                   <span className="radioList">
-                    <input type="radio" id="female" value="F" name="prtctorSexdstnCode" readOnly="readOnly" data-parsley-multiple="prtctorSexdstnCode" />
+                    <input
+                      type="radio"
+                      id="female"
+                      value="F"
+                      name="userSex"
+                      readOnly="readOnly"
+                      data-parsley-multiple="prtctorSexdstnCode"
+                    />
                     <label htmlFor="female">여</label>
                   </span>
                 </td>
@@ -670,11 +745,11 @@ const JoinUs = memo(() => {
                     <span className="tel_input">
                       <input
                         type="text"
-                        name="telno2"
+                        name="tel2"
                         id="telno2"
                         className="telno2_input"
                         {...register("tel2", {
-                          required: "연락처를 입력해주세요."
+                          required: "연락처를 입력해주세요.",
                         })}
                       />
                     </span>
@@ -682,16 +757,18 @@ const JoinUs = memo(() => {
                     <span className="tel_input">
                       <input
                         type="text"
-                        name="telno3"
+                        name="tel3"
                         id="telno3"
                         className="telno3_input"
                         {...register("tel3", {
-                          required: "연락처를 입력해주세요."
+                          required: "연락처를 입력해주세요.",
                         })}
                       />
                     </span>
                   </div>
-                  <p className="no_excep">예약 관련정보는 수신동의 여부와 관계없이 발송됩니다.</p>
+                  <p className="no_excep">
+                    예약 관련정보는 수신동의 여부와 관계없이 발송됩니다.
+                  </p>
                   {errors.tel3 && (
                     <p className="warn">
                       <img src={warning} alt="warning" />
@@ -775,15 +852,32 @@ const JoinUs = memo(() => {
                 <td>
                   <div>
                     <span className="email_input">
-                      <input type="text" name="emailId" id="emailId" className="email_id_input" title="이메일 아이디" />
+                      <input
+                        type="text"
+                        name="emailId"
+                        id="emailId"
+                        className="email_id_input"
+                        title="이메일 아이디"
+                      />
                     </span>
                     <span className="text">@</span>
                     <span className="email_input">
-                      <input type="text" name="emailDomainInput" id="email_domain_input" className="email_domain_input" title="이메일 도메인" />
+                      <input
+                        type="text"
+                        name="emailDomainInput"
+                        id="email_domain_input"
+                        className="email_domain_input"
+                        title="이메일 도메인"
+                      />
                     </span>
                     <span className="email_input">
                       <span className="input_group">
-                        <select name="emailDomain" id="emailDomain" className="email_domain" title="이메일 도메인">
+                        <select
+                          name="emailDomain"
+                          id="emailDomain"
+                          className="email_domain"
+                          title="이메일 도메인"
+                        >
                           <option defaultValue="">직접입력</option>
                           <option defaultValue="gmail.com">gmail.com</option>
                           <option defaultValue="naver.com">naver.com</option>
@@ -808,7 +902,10 @@ const JoinUs = memo(() => {
                       이메일 수신동의합니다.
                     </label>
                     <ul>
-                      <li>※ 회원가입 완료 및 예약 관련정보는 수신 동의 여부와 관계없이 발송됩니다.</li>
+                      <li>
+                        ※ 회원가입 완료 및 예약 관련정보는 수신 동의 여부와
+                        관계없이 발송됩니다.
+                      </li>
                     </ul>
                   </div>
                 </td>
@@ -818,14 +915,21 @@ const JoinUs = memo(() => {
           <h4>법정대리인 정보입력</h4>
           <table>
             <tbody>
+              {/* 법정대리인 성명 */}
               <tr>
                 <th>성명</th>
                 <td>
                   <div>
-                    <input type="text" id="prtctorNm" name="prtctorNm" className="name_input" />
+                    <input
+                      type="text"
+                      id="prtctorNm"
+                      name="prtctorNm"
+                      className="name_input"
+                    />
                   </div>
                 </td>
               </tr>
+              {/* 법정대리인 성별 */}
               <tr>
                 <th>성별</th>
                 <td>
@@ -843,17 +947,30 @@ const JoinUs = memo(() => {
                     <label htmlFor="male">남</label>
                   </span>
                   <span className="radioList">
-                    <input type="radio" id="female" value="F" name="prtctorSexdstnCode" readOnly="readOnly" data-parsley-multiple="prtctorSexdstnCode" />
+                    <input
+                      type="radio"
+                      id="female"
+                      value="F"
+                      name="prtctorSexdstnCode"
+                      readOnly="readOnly"
+                      data-parsley-multiple="prtctorSexdstnCode"
+                    />
                     <label htmlFor="female">여</label>
                   </span>
                 </td>
               </tr>
+              {/* 법정대리인 생년월일 */}
               <tr>
                 <th>생년월일</th>
                 <td>
                   <div>
                     <span className="birthdate_input">
-                      <select className="year_input" id="birthYear" title="년">
+                      <select
+                        className="year_input"
+                        id="birthYear"
+                        title="년"
+                        name="year_input"
+                      >
                         <option defaultValue="1900">1900년</option>
                         <option defaultValue="1901">1901년</option>
                         <option defaultValue="1902">1902년</option>
@@ -962,7 +1079,12 @@ const JoinUs = memo(() => {
                       </select>
                     </span>
                     <span className="birthdate_input">
-                      <select className="month_input" id="birthMonth" title="월">
+                      <select
+                        className="month_input"
+                        id="birthMonth"
+                        title="월"
+                        name="month_input"
+                      >
                         <option defaultValue="1">1월</option>
                         <option defaultValue="2">2월</option>
                         <option defaultValue="3">3월</option>
@@ -978,7 +1100,12 @@ const JoinUs = memo(() => {
                       </select>
                     </span>
                     <span className="birthdate_input">
-                      <select className="date_input" id="birthDate" title="일">
+                      <select
+                        className="date_input"
+                        id="birthDate"
+                        title="일"
+                        name="date_input"
+                      >
                         <option defaultValue="1">1일</option>
                         <option defaultValue="2">2일</option>
                         <option defaultValue="3">3일</option>
@@ -1015,6 +1142,7 @@ const JoinUs = memo(() => {
                   </div>
                 </td>
               </tr>
+              {/* 본인인증 */}
               <tr>
                 <th>인증</th>
                 <td>

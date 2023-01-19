@@ -1,7 +1,7 @@
 /**
  * @ File Name: LoginWay01.js
  * @ Author: 김다보미 (cdabomi@nate.com)
- * @ Last Update: 2023-01-13 15:20
+ * @ Last Update: 2023-01-18 15:40
  * @ Description: 세브란스 로그인 페이지
  */
 
@@ -238,11 +238,16 @@ const LoginWay01 = memo(() => {
           // Ajax 요청 보내기 -> 백엔드가 전달한 결과값이 response.data에 저장된다.
           const response = await axios.post('/api/login', { userid: user_id, userpw: user_pw });
           console.log(response.data);
+          window.sessionStorage.userInfo = JSON.stringify(response.data.userInfo);
           navigate('/mysevrance');
       } catch (error) {
-          const errorMsg = '[' + error.response.status + '] ' + error.response.statusText;
-          console.error(errorMsg);
-          alert('로그인에 실패했습니다. 아이디나 비밀번호를 확인하세요.');
+          if (error.response?.data?.rtmsg) {
+            alert(error.response?.data?.rtmsg);
+          } else {
+            const errorMsg = '[' + error.response.status + '] ' + error.response.statusText;
+            console.error(errorMsg);
+            alert("로그인에 실패했습니다. 회원정보를 확인하세요.");
+          }
       }
   });
 

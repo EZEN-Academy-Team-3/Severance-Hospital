@@ -49,10 +49,11 @@ const Div = styled.div`
 `;
 
 const UtilArea = memo(() => {
+  let userInfo = JSON.parse(window.sessionStorage.userInfo);
     return (
         <Div>
             <div className='utilArea'>
-              <span><strong>userid</strong>님 반갑습니다.</span>
+              <span><strong>{userInfo.userId}</strong>님 반갑습니다.</span>
               <span id='pad'>&nbsp;|&nbsp;</span>
               <i className='icoLogout'></i>
               <Link to='/login'>

@@ -5,7 +5,7 @@
  * @ Description: 의약품 검색 약정보로찾기 탭
  */
 
-import React, { memo, useCallback, useRef, useEffect, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Spinner from '../../components/Spinner'
@@ -22,8 +22,6 @@ const DrugCont = styled.div``;
 const TabInfo = memo(() => {
   //dispatch함수 생성
   const dispatch = useDispatch();
-  /** 리덕스 처리가 끝남을 감지하는 상태값 */
-  const [init, setInit] = useState(false);
 
   //hook을 통해 slice가 관리하는 상태값 가져오기
   const { data, loading, error } = useSelector(

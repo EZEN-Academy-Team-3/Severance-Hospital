@@ -268,6 +268,19 @@ const Div = styled.article`
 `;
 
 const MysevMain = memo(() => {
+
+  let userInfo = JSON.parse(window.sessionStorage.userInfo);
+
+  // if (!window.sessionStorage.userInfo) {
+  //   // 로그인 아님
+  // } else {
+  //   // 로그인 ok
+
+  //   // 로그인 정보
+  //   userInfo = JSON.parse(window.sessionStorage.userInfo);
+  //   console.log(userInfo);
+  // }
+
   /** 페이지 강제 이동을 처리하기 위한 navigate함수 생성 */
   const navigate = useNavigate();
 
@@ -292,7 +305,7 @@ const MysevMain = memo(() => {
           {/* 개인정보 */}
           <div className="gridItem">
             <div className="titleWrap">
-              <span>주혜지님</span>
+              <span>{userInfo.userName}님</span>
               <div className="btnCont">
                 <button type="button" className="btn">
                   <Link to='/user_info/details_edit'>개인정보수정</Link>

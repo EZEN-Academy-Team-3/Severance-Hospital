@@ -1,7 +1,7 @@
 /**
  * @ File Name: CustomerBoardView.js
  * @ Author: 주혜지 (rosyjoo1999@gmail.com)
- * @ Last Update: 2022-12-28 15:1:00
+ * @ Last Update: 2023-01-16 15:1:00
  * @ Description: 의약품 검색 약모양으로찾기 탭
  */
 
@@ -9,7 +9,6 @@ import React, { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getList } from '../../slices/DrugSearchSlice';
-import RegexHelper from '../../helper/RegexHelper';
 import { useQueryString } from '../../hooks/useQueryString';
 
 import styled from 'styled-components';
@@ -211,12 +210,12 @@ const TabShape = memo(() => {
   const [isData, setIsData] = useState([]);
 
   // 검색어 받기
-  const { query, shape, color, trapezoid, line } = useQueryString();
-  console.log(`query=${query}`);
-  console.log(`shape=${shape}`);
-  console.log(`color=${color}`);
-  console.log(`trapezoid=${trapezoid}`);
-  console.log(`line=${line}`);
+  const { query= "", shape= "", color= "", trapezoid= "", line= "" } = useQueryString();
+  // console.log(`query=${query}`);
+  // console.log(`shape=${shape}`);
+  // console.log(`color=${color}`);
+  // console.log(`trapezoid=${trapezoid}`);
+  // console.log(`line=${line}`);
 
   /** 리덕스 관련 초기화 */
   const dispatch = useDispatch();
@@ -230,62 +229,38 @@ const TabShape = memo(() => {
   const onDrugInfoSubmit = useCallback((e) => {
     e.preventDefault();
 
-    const queryString = e.currentTarget.itemName.value;
+    const query = e.currentTarget.itemName.value;
     const shape = e.currentTarget.drugShape.value;
     const color = e.currentTarget.colorClass1.value;
     const trapezoid = e.currentTarget.formCodeName.value;
     const line = e.currentTarget.lineFront.value;
 
     navigate(
-      `${window.location.pathname}?query=${queryString}&shape=${shape}&color=${color}&trapezoid=${trapezoid}&line=${line}`
+      `${window.location.pathname}?query=${query}&shape=${shape}&color=${color}&trapezoid=${trapezoid}&line=${line}`
     );
+    (query !== queryStatus.query || shape !== queryStatus.shape || color !== queryStatus.color || trapezoid !== queryStatus.trapezoid || line !== queryStatus.line)&& setPage(1);
   }, []);
 
   useEffect(() => {
     dispatch(
       getList({
-        query: query, 
-        shape: shape, 
-        color: color, 
-        trapezoid: trapezoid, 
+        query: query,
+        shape: shape,
+        color: color,
+        trapezoid: trapezoid,
         line: line,
         page: page,
         rows: 12,
       })
-    );
-  }, [query, shape, color, trapezoid, line]);
-
-  /** 더보기 눌렀을 때 추가 검색 결과를 요청 */
-  // useEffect(() => {
-  //   if (page > 1) {
-  //     console.log('추가검색결과요청');
-
-  //     dispatch(
-  //       getList({
-  //         query: queryStatus,
-  //         page: page,
-  //         rows: 12,
-  //       })
-  //     ).then(({ payload }) => {
-  //       setIsData((nowData) => nowData.concat(payload.data));
-  //     });
-  //   }
-  // }, [page]);
-
-  /** 초기화 버튼 눌렀을 때 호출될 이벤트 핸들러 */
-  const onResetClick = useCallback((e) => {
-    //setIsData([]);
-  });
-
-  // if (isData) {
-  //   console.log('TabShape isData:', isData);
-  // }
-  // if (pagenation) {
-  //   console.log('Pagenation:', pagenation);
-  // }
-  // if (queryStatus) {
-  //   console.log('현재검색어', queryStatus);
-  // }
+    ).then(({ payload }) => {
+      if (query !== queryStatus.query || shape !== queryStatus.shape || color !== queryStatus.color || trapezoid !== queryStatus.trapezoid || line !== queryStatus.line) {
+        setIsData(payload.data);
+        setQueryStatus({query,shape,color,trapezoid,line});
+      } else {
+        setIsData((nowData) => nowData.concat(payload.data));
+      }
+    });
+  }, [query, shape, color, trapezoid, line, page]);
 
   return (
     <DrugCont>
@@ -303,7 +278,7 @@ const TabShape = memo(() => {
                     type="radio"
                     name="drugShape"
                     id="d1"
-                    value="전체"
+                    value=""
                     defaultChecked
                   />
                   <span className="label">
@@ -415,7 +390,7 @@ const TabShape = memo(() => {
                     type="radio"
                     name="colorClass1"
                     id="da1"
-                    value="전체"
+                    value=""
                     defaultChecked
                   />
                   <span className="label">
@@ -627,7 +602,7 @@ const TabShape = memo(() => {
                     type="radio"
                     name="formCodeName"
                     id="dc1"
-                    value="전체"
+                    value=""
                     defaultChecked
                   />
                   <span className="label">
@@ -656,7 +631,7 @@ const TabShape = memo(() => {
                   />
                   <span className="label">
                     <i className="drugIco formula2"></i>
-                    <span className="text">연질캡슐</span>
+                    <span className="text">필름</span>
                   </span>
                 </label>
                 <label>
@@ -668,7 +643,7 @@ const TabShape = memo(() => {
                   />
                   <span className="label">
                     <i className="drugIco formula3"></i>
-                    <span className="text">경질캡슐</span>
+                    <span className="text">경질</span>
                   </span>
                 </label>
               </dd>
@@ -683,7 +658,7 @@ const TabShape = memo(() => {
                     type="radio"
                     name="lineFront"
                     id="db1"
-                    value="전체"
+                    value=""
                     defaultChecked
                   />
                   <span className="label">
@@ -737,7 +712,6 @@ const TabShape = memo(() => {
             <button
               type="reset"
               className="buttonWhite marginleft"
-              onClick={onResetClick}
             >
               초기화
             </button>

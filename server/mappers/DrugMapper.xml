@@ -1,7 +1,7 @@
 i<!-- 
  * @ File Name: DrugMapper.xml
  * @ Author: 주혜지 (rosyjoo1999@gmail.com)
- * @ Last Update: 2023-01-13 13:51
+ * @ Last Update: 2023-01-17 15:09
  * @ Description: 의약품 sql mapper
  -->
  
@@ -29,7 +29,7 @@ i<!--
             </if>
             <!-- 색상 -->
             <if test="COLOR_CLASS != null and COLOR_CLASS != ''">
-                and COLOR_CLASS1 LIKE concat('%', #{COLOR_CLASS}, '%') or COLOR_CLASS2 LIKE concat('%', #{COLOR_CLASS}, '%')
+                and (COLOR_CLASS1 LIKE concat('%', #{COLOR_CLASS}, '%') or COLOR_CLASS2 LIKE concat('%', #{COLOR_CLASS}, '%'))
             </if>
             <!-- 제형 -->
             <if test="trapeziod != null and trapeziod != ''">
@@ -37,7 +37,7 @@ i<!--
             </if>
             <!-- 분할선 -->
             <if test="line != null and line != ''">
-                and LINE_FRONT LIKE concat('%', #{line}, '%') or LINE_BACK LIKE concat('%', #{line}, '%')
+                and (LINE_FRONT LIKE concat('%', #{line}, '%') or LINE_BACK LIKE concat('%', #{line}, '%'))
             </if>
         </where>
         
@@ -73,8 +73,21 @@ i<!--
             <if test="ITEM_NAME != null and ITEM_NAME != ''">
                 ITEM_NAME LIKE concat('%', #{ITEM_NAME}, '%')
             </if>
-            <if test="ITEM_ENG_NAME != null and ITEM_ENG_NAME != ''">
-                or ITEM_ENG_NAME LIKE concat('%', #{ITEM_ENG_NAME}, '%')
+            <!-- 모양 -->
+            <if test="DRUG_SHAPE != null and DRUG_SHAPE != ''">
+                and DRUG_SHAPE LIKE concat('%', #{DRUG_SHAPE}, '%')
+            </if>
+            <!-- 색상 -->
+            <if test="COLOR_CLASS != null and COLOR_CLASS != ''">
+                and (COLOR_CLASS1 LIKE concat('%', #{COLOR_CLASS}, '%') or COLOR_CLASS2 LIKE concat('%', #{COLOR_CLASS}, '%'))
+            </if>
+            <!-- 제형 -->
+            <if test="trapeziod != null and trapeziod != ''">
+                and CHARTN LIKE concat('%', #{trapeziod}, '%')
+            </if>
+            <!-- 분할선 -->
+            <if test="line != null and line != ''">
+                and (LINE_FRONT LIKE concat('%', #{line}, '%') or LINE_BACK LIKE concat('%', #{line}, '%'))
             </if>
         </where>
     </select>

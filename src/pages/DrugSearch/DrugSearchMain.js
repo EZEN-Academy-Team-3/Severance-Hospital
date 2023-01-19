@@ -10,6 +10,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import DrugSearch from './DrugSearch';
 import DrugInfo from './DrugInfo';
+import DrugShape from './DrugShape';
 import Header from '../../components/MainPageHeader';
 import Footer from '../../components/Footer';
 import TopButton from '../../components/TopButton';
@@ -24,7 +25,7 @@ const DrugSearchMain = memo(() => {
           <Routes>
             <Route path="/*" element={<DrugSearch />} />
             <Route path="/tab-info/:id" element={<DrugInfo />} />
-            <Route path="/tab-shape/:id" element={<DrugInfo />} />
+            <Route path="/tab-shape/:id" element={<DrugShape />} />
           </Routes>
         </div>
       </div>

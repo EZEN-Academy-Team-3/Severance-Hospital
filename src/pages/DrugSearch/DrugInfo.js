@@ -1,7 +1,7 @@
 /**
  * @ File Name: DrugInfo.js
  * @ Author: 주혜지 (rosyjoo1999@gmail.com)
- * @ Last Update: 2023-01-12 18:03:00
+ * @ Last Update: 2023-01-17 15:35:00
  * @ Description: 의약품 검색 상세페이지
  */
 
@@ -9,7 +9,7 @@ import React, { memo, useEffect, useMemo } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { getCurrentData, getList, getDrug_info } from '../../slices/DrugSearchSlice';
+import { getCurrentData, getItem, getDrug_info } from '../../slices/DrugSearchSlice';
 
 import Spinner from '../../components/Spinner';
 
@@ -40,16 +40,14 @@ const DrugInfo = memo(() => {
   /** 데이터 값 변경에 따른 사이드 이펙트 처리 */
   const item = useMemo(()=>{
     if(data){
-      // console.log('druginfo data',data);
         return data.items.find((v,i)=> v.ITEM_SEQ == id || v.itemSeq == id);
-        // dispatch(getList({item_seq:id}));
-        // dispatch(getDrug_info({itemSeq:id}));
+
     }else{
         //새로고침시 현재 데이터만 다시 로드
         //url에 따라 다른 api처리
         if(pathname.substring(9,18) == `tab-shape`){
           console.log(pathname.substring(9,18));
-          dispatch(getList({item_seq:id}));
+          dispatch(getItem({item_seq:id}));
         }else{
           dispatch(getDrug_info({itemSeq:id}));
         }

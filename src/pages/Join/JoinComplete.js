@@ -177,7 +177,7 @@ const JoinComplete = memo(() => {
           </div>
           <div className="content">
             <h5>
-              환영합니다 <span className="name"></span>님!
+              환영합니다!
             </h5>
             <p>
               세브란스 통합 계정으로 패밀리 사이트를 모두 이용하실 수 있습니다.
