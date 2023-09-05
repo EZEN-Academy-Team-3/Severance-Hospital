@@ -21,7 +21,7 @@ import Spinner from "../../../components/Spinner";
 import { GetEditForm, Table, TableEx, SearchForm, AddForm, PaginationNav } from "../common/ManagerStyle";
 import PaginationCustom from "../common/PaginationCustom";
 import TableSearch from "../common/TableSearch";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const LinkStyled = styled(Link)`
@@ -49,6 +49,9 @@ const LinkStyled = styled(Link)`
 `;
 
 const Notice = memo(() => {
+    /** 수정 완료 후 목록으로 되돌아가기 위한 페이지 강제 이동 함수 생성 */
+    const navigate = useNavigate();
+
   /** 화면 갱신 상태값 */
   const [isUpdate, setIsUpdate] = useState(1);
   /** 수정 아이디 상태값 */
@@ -172,6 +175,8 @@ const Notice = memo(() => {
     const current = e.currentTarget;
     const id = parseInt(current.dataset.id);
     setUpdateId(id);
+
+    navigate(`/manager/notice/edit/${id}}`);
   }, []);
 
   return (

@@ -66,7 +66,7 @@ app.use((req, res, next) => {
     protocol: req.protocol,
     host: req.get("host"),
     port: req.port,
-    pathname: req.originalUrl
+    pathname: req.originalUrl,
   });
 
   logger.debug(`[${req.method}] ${decodeURIComponent(current_url)}`);
@@ -125,10 +125,10 @@ app.use(
         columnNames: {
           session_id: process.env.MYSQL_SESSION_FIELD_ID,
           expires: process.env.MYSQL_SESSION_FIELD_EXPIRES,
-          data: process.env.MYSQL_SESSION_FIELD_DATA
-        }
-      }
-    })
+          data: process.env.MYSQL_SESSION_FIELD_DATA,
+        },
+      },
+    }),
   })
 );
 
@@ -142,30 +142,29 @@ app.use("/", router);
 app.use(require("./controllers/CHospitalController"));
 app.use(require("./controllers/CDoctorController"));
 //news
-app.use(require('./controllers/NewsController'));
-app.use(require('./controllers/NoticeController'));
+app.use(require("./controllers/NewsController"));
+app.use(require("./controllers/NoticeController"));
 
 // 의약품
-app.use(require('./controllers/DrugController'));
+app.use(require("./controllers/DrugController"));
 
 // 회원정보
-app.use(require('./controllers/UserInfoController'));
+app.use(require("./controllers/UserInfoController"));
 
 // 의사
-app.use(require('./controllers/DoctorController'));
+app.use(require("./controllers/DoctorController"));
 
 // 병원
-app.use(require('./controllers/HospitalController'));
+app.use(require("./controllers/HospitalController"));
 
 // 진료과
-app.use(require('./controllers/DepartmentController'));
+app.use(require("./controllers/DepartmentController"));
 
 // 로그인
-app.use(require('./controllers/LoginController'));
-
+app.use(require("./controllers/LoginController"));
 
 app.use((err, req, res, next) => res.sendError(err));
-app.use("*", (req, res, next) => res.sendError(new PageNotFoundException()));
+// app.use("*", (req, res, next) => res.sendError(new PageNotFoundException()));
 
 /*----------------------------------------------------------
  | 6) 설정한 내용을 기반으로 서버 구동 시작

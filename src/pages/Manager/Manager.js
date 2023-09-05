@@ -86,7 +86,7 @@ const Manager = memo(() => {
         <Route path="/news" element={<News />} />
 
         <Route path="/notice" element={<Notice />} />
-        <Route path="/notice/add" element={<NoticeAdd />} />
+        <Route path="/notice/add/:id" element={<NoticeAdd />} />
         <Route path="/notice/edit/:id" element={<NoticeEdit />} />
         <Route path="/notice/view/:id" element={<NoticeView />} />
 

@@ -75,6 +75,11 @@ textarea{
     resize: none;
 }
 
+/** ckeditor5 */
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+  min-height: 320px;
+}
+
 /** 페이지 관련 */
 //전체 Cont
 .pageCont{

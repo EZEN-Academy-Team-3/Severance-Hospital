@@ -34,6 +34,8 @@ const NoticeEdit = memo(() => {
   const dispatch = useDispatch();
   const { pagenation, data, loading, error } = useSelector((state) => state.NoticeSlice);
 
+  console.log(data);
+
   /** 최초마운트 시 또는 id값이 변경된 경우, 리덕스를 통해 해당 id의 데이터를 조회 */
   useEffect(() => {
     dispatch(getItem({ id: id }));

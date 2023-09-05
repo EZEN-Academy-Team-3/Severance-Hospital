@@ -8,10 +8,10 @@
 /** import */
 // react
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { getList, postItem, putItem, deleteItem } from "../../../slices/NoticeSlice";
+import { getList, postItem, putItem, deleteItem, getItem } from "../../../slices/NoticeSlice";
 // module
 import dayjs from "dayjs";
 // helper
@@ -71,10 +71,11 @@ const Table = styled.table`
         height: 100%;
 
         display: block;
-        font-size: 14px;
+        font-size: 24px;
+        font-weight: bold;
 
-        border: 0;
-        padding: 0 10px;
+        border: 1px solid #ddd;
+        padding: 12.5px 8.4px;
         box-sizing: border-box;
 
         outline: none;
@@ -175,7 +176,7 @@ const NoticeAdd = memo(() => {
             </tr>
             <tr>
               <td>
-                <input className="field" type="text" name="noticeTitle" />
+                <input className="field" type="text" name="noticeTitle" placeholder="제목을 입력하세요." />
               </td>
             </tr>
             <tr>
@@ -183,28 +184,30 @@ const NoticeAdd = memo(() => {
             </tr>
             <tr>
               <td>
-              <CKEditor 
-                    editor={ ClassicEditor }
-                    data="<p>Hello from CKEditor 5!</p>"
-                    onReady={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
-                        
-                    } }
-                    // onChange={(event, editor) => {
-                    //     const data = editor.getData();
-                    //     console.log({ event, editor, data });
-                    //     setBoard_cotent({
-                    //       ...board_content,
-                    //       board_content: data
-                    //     })
-                    //   }}
-                    onBlur={ ( event, editor ) => {
-                        console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ ( event, editor ) => {
-                        console.log( 'Focus.', editor );
-                    } }
+                <CKEditor
+                  editor={ClassicEditor}
+                  // data="<p>Hello from CKEditor 5!</p>"
+                  config={{
+                    placeholder: "내용을 입력하세요."
+                  }}
+                  onReady={(editor) => {
+                    // You can store the "editor" and use when it is needed.
+                    console.log("Editor is ready to use!", editor);
+                  }}
+                  // onChange={(event, editor) => {
+                  //     const data = editor.getData();
+                  //     console.log({ event, editor, data });
+                  //     setBoard_cotent({
+                  //       ...board_content,
+                  //       board_content: data
+                  //     })
+                  //   }}
+                  // onBlur={(event, editor) => {
+                  //   console.log("Blur.", editor);
+                  // }}
+                  // onFocus={(event, editor) => {
+                  //   console.log("Focus.", editor);
+                  // }}
                 />
                 {/* <input className="field" type="text" name="noticeTitle" /> */}
               </td>
@@ -214,15 +217,13 @@ const NoticeAdd = memo(() => {
           <tfoot>
             <tr>
               <th>조회수 추가일시 수정일시</th>
+              {/* 이거 필요없음 */}
             </tr>
           </tfoot>
         </Table>
 
         <button type="submit">저장</button>
       </AddForm>
-
-
-      
     </>
   );
 });
